@@ -1,6 +1,6 @@
 "use client";
 
-import type { TooltipProps } from "recharts";
+import type { TooltipContentProps } from "recharts";
 
 type Series = { label: string; dot: string };
 
@@ -9,7 +9,7 @@ export function ChartTooltip({
   payload,
   label,
   series,
-}: TooltipProps<number, string> & { series?: Record<string, Series> }) {
+}: TooltipContentProps & { series?: Record<string, Series> }) {
   if (!active || !payload?.length) return null;
   return (
     <div className="bg-surface border border-border-default rounded-lg px-3 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.08)]">
