@@ -7,6 +7,7 @@ import { Card } from "../components/Card";
 import { CallsLineChart } from "../components/charts/CallsLineChart";
 import { SegmentedControl } from "../components/SegmentedControl";
 import { StatusPill } from "../components/StatusPill";
+import { EndpointTable } from "../components/EndpointTable";
 import {
   Table,
   TableBody,
@@ -113,40 +114,16 @@ export default function UsagePage() {
 
       {/* By endpoint */}
       <section className="flex flex-col gap-5">
-        <SectionTitle>By endpoint</SectionTitle>
-        <div className="bg-surface border border-border-default rounded-2xl shadow-[0_0_8px_rgba(0,0,0,0.02)] overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-transparent">
-                <TableHead>Endpoint</TableHead>
-                <TableHead>Calls</TableHead>
-                <TableHead>Success</TableHead>
-                <TableHead>Avg latency</TableHead>
-                <TableHead>P95</TableHead>
-                <TableHead>Credits</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {endpointRows.map((row, i) => (
-                <TableRow
-                  key={row.endpoint}
-                  className={
-                    i === endpointRows.length - 1 ? "border-b-0" : undefined
-                  }
-                >
-                  <TableCell className="text-code text-primary-pressed">
-                    {row.endpoint}
-                  </TableCell>
-                  <TableCell>{row.calls}</TableCell>
-                  <TableCell>{row.success}</TableCell>
-                  <TableCell>{row.avgLatency}</TableCell>
-                  <TableCell>{row.p95}</TableCell>
-                  <TableCell>{row.credits}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+        <SectionTitle
+          trailing={
+            <span className="text-base text-text-muted">
+              Click a row to see sub-charges
+            </span>
+          }
+        >
+          By endpoint
+        </SectionTitle>
+        <EndpointTable rows={endpointRows} />
       </section>
 
       {/* Recent requests */}

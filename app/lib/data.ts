@@ -99,7 +99,25 @@ export const usageMetrics = {
   creditsUsed: { value: "4,820", caption: "≈ $24.18" },
 } as const;
 
-export const endpointRows = [
+export type EndpointBreakdownItem = {
+  label: string;
+  description?: string;
+  calls: string;
+  unitCredits: string;
+  credits: string;
+};
+
+export type EndpointRow = {
+  endpoint: string;
+  calls: string;
+  success: string;
+  avgLatency: string;
+  p95: string;
+  credits: string;
+  breakdown?: EndpointBreakdownItem[];
+};
+
+export const endpointRows: EndpointRow[] = [
   {
     endpoint: "/enrichments",
     calls: "1,243",
@@ -107,6 +125,29 @@ export const endpointRows = [
     avgLatency: "128 ms",
     p95: "204 ms",
     credits: "3,729",
+    breakdown: [
+      {
+        label: "/enriched-phone",
+        description: "Phone number lookup",
+        calls: "1,243",
+        unitCredits: "1.5 cr",
+        credits: "1,864",
+      },
+      {
+        label: "/enriched-email",
+        description: "Email verification & enrichment",
+        calls: "1,243",
+        unitCredits: "1.0 cr",
+        credits: "1,243",
+      },
+      {
+        label: "/company-data",
+        description: "Employer match",
+        calls: "1,243",
+        unitCredits: "0.5 cr",
+        credits: "622",
+      },
+    ],
   },
   {
     endpoint: "/deep-research",
@@ -114,7 +155,44 @@ export const endpointRows = [
     success: "99.4%",
     avgLatency: "38.2 s",
     p95: "61.4 s",
-    credits: "812",
+    credits: "42,224",
+    breakdown: [
+      {
+        label: "/enriched-phone",
+        description: "Avg. 2× per research run",
+        calls: "1,624",
+        unitCredits: "10 cr",
+        credits: "16,240",
+      },
+      {
+        label: "/enriched-email",
+        description: "Avg. 2× per research run",
+        calls: "1,624",
+        unitCredits: "10 cr",
+        credits: "16,240",
+      },
+      {
+        label: "/company-data",
+        description: "Employer & industry context",
+        calls: "812",
+        unitCredits: "6 cr",
+        credits: "4,872",
+      },
+      {
+        label: "/web-search",
+        description: "Open web research",
+        calls: "812",
+        unitCredits: "4 cr",
+        credits: "3,248",
+      },
+      {
+        label: "LLM synthesis",
+        description: "Model compute & summarization",
+        calls: "812",
+        unitCredits: "2 cr",
+        credits: "1,624",
+      },
+    ],
   },
   {
     endpoint: "/people-search",
@@ -123,6 +201,22 @@ export const endpointRows = [
     avgLatency: "212 ms",
     p95: "418 ms",
     credits: "276",
+    breakdown: [
+      {
+        label: "Search index",
+        description: "Identity graph lookup",
+        calls: "604",
+        unitCredits: "0.30 cr",
+        credits: "181",
+      },
+      {
+        label: "Result hydration",
+        description: "Attach profile fields",
+        calls: "604",
+        unitCredits: "0.16 cr",
+        credits: "95",
+      },
+    ],
   },
 ];
 
