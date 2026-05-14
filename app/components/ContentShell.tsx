@@ -15,7 +15,7 @@ export function ContentShell({
     <div className="h-full pr-3 py-3 flex flex-col overflow-hidden">
       <div
         className={cn(
-          "flex-1 min-h-0 bg-surface border border-border-default rounded-[20px] shadow-[0_0_8px_rgba(0,0,0,0.05)] overflow-auto",
+          "flex-1 min-h-0 bg-surface border border-border-default rounded-[20px] shadow-[0_0_8px_rgba(0,0,0,0.05)] overflow-auto overscroll-none",
           className,
         )}
       >
