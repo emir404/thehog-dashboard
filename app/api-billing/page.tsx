@@ -1,206 +1,184 @@
+"use client";
+
+import { useState } from "react";
+import { Calendar } from "@phosphor-icons/react";
+import { ContentShell } from "../components/ContentShell";
+import { SectionTitle } from "../components/SectionTitle";
+import { Card } from "../components/Card";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
 import {
-  CreditCard,
-  DownloadSimple,
-  PencilSimple,
-} from "@phosphor-icons/react/dist/ssr";
-
-type Invoice = {
-  date: string;
-  description: string;
-  amount: string;
-  status: "Paid" | "Processing";
-};
-
-const invoices: Invoice[] = [
-  { date: "May 1, 2026", description: "Pro · April 2026", amount: "$49.00", status: "Paid" },
-  { date: "Apr 14, 2026", description: "Top-up credits", amount: "$100.00", status: "Paid" },
-  { date: "Apr 1, 2026", description: "Pro · March 2026", amount: "$49.00", status: "Paid" },
-  { date: "Mar 28, 2026", description: "Overage · Mar 17 – 28", amount: "$8.42", status: "Processing" },
-];
-
-function StatusPill({ status }: { status: Invoice["status"] }) {
-  const styles =
-    status === "Paid"
-      ? "bg-success-subtle text-success"
-      : "bg-warning-subtle text-warning";
-  return (
-    <span
-      className={`text-caption-strong rounded-full px-2 py-0.5 inline-block ${styles}`}
-    >
-      {status}
-    </span>
-  );
-}
-
-function Field({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="text-eyebrow">{label}</span>
-      <span className="text-body text-text whitespace-pre-line">{value}</span>
-    </div>
-  );
-}
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../components/ui/table";
+import { motion } from "motion/react";
+import { cn } from "@/app/lib/utils";
+import { creditPackages, customCheckoutBase, invoices } from "../lib/data";
 
 export default function ApiBillingPage() {
+  const [customAmount, setCustomAmount] = useState("");
+
+  const goToStripe = (url: string) => {
+    window.location.assign(url);
+  };
+
+  const handlePayCustom = () => {
+    const amount = customAmount.trim();
+    if (!amount) return;
+    goToStripe(`${customCheckoutBase}?amount=${encodeURIComponent(amount)}`);
+  };
+
   return (
-    <div className="max-w-[1200px] mx-auto px-10 py-10 flex flex-col gap-10">
-      <header className="flex flex-col gap-2">
-        <h1 className="text-h1 text-text">API Billing</h1>
+    <ContentShell variant="wide">
+      <header className="flex flex-col gap-2.5">
+        <h1 className="text-metric-lg text-text">API Billing</h1>
         <p className="text-body text-text-muted">
           Manage your plan, payment method, and invoices.
         </p>
       </header>
 
-      <section className="bg-primary-subtle border border-primary-subtle rounded-lg p-6 grid grid-cols-[1fr_1.4fr_auto] gap-8 items-center">
-        <div className="flex flex-col gap-2">
-          <span className="text-eyebrow text-primary-subtle-text">
-            Current plan
+      {/* Top KPI row */}
+      <section className="grid grid-cols-2 gap-4" style={{ height: 180 }}>
+        <Card className="p-5 flex flex-col justify-between" height={180}>
+          <span className="text-sm font-medium text-text-muted">
+            Available credits
           </span>
-          <span className="text-h1 text-primary-subtle-text">Pro</span>
-          <span className="text-caption text-primary-subtle-text/80">
-            Renews May 28, 2026
-          </span>
-        </div>
-        <div className="grid grid-cols-3 gap-6">
-          {[
-            { label: "Included credits", value: "100,000 / mo" },
-            { label: "Overage rate", value: "$0.0008 / credit" },
-            { label: "Monthly cost", value: "$49" },
-          ].map((stat) => (
-            <div key={stat.label} className="flex flex-col gap-1">
-              <span className="text-eyebrow text-primary-subtle-text">
-                {stat.label}
-              </span>
-              <span className="text-metric text-primary-subtle-text">
-                {stat.value}
-              </span>
-            </div>
-          ))}
-        </div>
-        <div className="flex flex-col items-end gap-2">
-          <button
-            type="button"
-            className="h-9 px-4 rounded-md bg-primary text-text-on-primary text-body-strong hover:bg-primary-hover transition-colors"
-          >
-            Upgrade
-          </button>
-          <button
-            type="button"
-            className="text-caption text-primary-subtle-text/80 hover:text-primary-subtle-text"
-          >
-            Downgrade
-          </button>
-        </div>
-      </section>
-
-      <section className="grid grid-cols-2 gap-4">
-        <div className="bg-surface border border-border-default rounded-lg p-6 flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-h3 text-text">Payment method</h3>
-            <button
-              type="button"
-              className="text-caption-strong text-primary hover:text-primary-hover"
-            >
-              Update
-            </button>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-14 rounded-md bg-text grid place-items-center">
-              <CreditCard size={20} weight="regular" className="text-surface" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-code text-text">Visa •••• 4242</span>
-              <span className="text-caption text-text-subtle">
-                Expires 04 / 28
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-surface border border-border-default rounded-lg p-6 flex flex-col gap-4">
-          <h3 className="text-h3 text-text">Top up credits</h3>
-          <p className="text-body text-text-muted">
-            Add credits to your account. One-time, never expires.
-          </p>
-          <div className="flex items-center gap-2">
-            <div className="flex-1 inline-flex items-center bg-surface-subtle border border-border-default rounded-md h-10 overflow-hidden">
-              <span className="pl-3 text-body text-text-muted">$</span>
-              <input
-                type="text"
-                defaultValue="100"
-                className="flex-1 h-full px-2 bg-transparent text-body-strong text-text focus:outline-none"
+          <div className="flex flex-col gap-4">
+            <span className="text-metric-lg text-text">$120.42</span>
+            <div className="flex items-center gap-1.5">
+              <Calendar
+                size={14}
+                weight="regular"
+                className="text-text-muted"
               />
-            </div>
-            <button
-              type="button"
-              className="h-10 px-4 rounded-md bg-primary text-text-on-primary text-body-strong hover:bg-primary-hover transition-colors"
-            >
-              Add credits
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-surface border border-border-default rounded-lg p-6 flex flex-col gap-5">
-        <div className="flex items-center justify-between">
-          <h3 className="text-h3 text-text">Billing details</h3>
-          <button
-            type="button"
-            className="inline-flex items-center gap-1 text-caption-strong text-primary hover:text-primary-hover"
-          >
-            <PencilSimple size={12} weight="regular" />
-            Edit
-          </button>
-        </div>
-        <div className="grid grid-cols-2 gap-x-12 gap-y-5">
-          <Field label="Company name" value="Arc Labs Inc." />
-          <Field label="Billing email" value="billing@witharc.co" />
-          <Field
-            label="Address"
-            value={"548 Market St #67890\nSan Francisco, CA 94104\nUnited States"}
-          />
-          <Field label="Tax ID" value="US-EIN 87-1234567" />
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-4">
-        <h2 className="text-h2 text-text">Invoices</h2>
-        <div className="bg-surface border border-border-default rounded-lg overflow-hidden">
-          <div className="grid grid-cols-[1.2fr_2fr_1fr_1fr_60px] gap-4 px-5 py-3 bg-surface-subtle border-b border-border-subtle">
-            <span className="text-eyebrow">Date</span>
-            <span className="text-eyebrow">Description</span>
-            <span className="text-eyebrow text-right">Amount</span>
-            <span className="text-eyebrow">Status</span>
-            <span />
-          </div>
-          {invoices.map((inv, i) => (
-            <div
-              key={`${inv.date}-${inv.description}`}
-              className={`grid grid-cols-[1.2fr_2fr_1fr_1fr_60px] gap-4 items-center px-5 py-3 ${
-                i < invoices.length - 1
-                  ? "border-b border-border-subtle"
-                  : ""
-              }`}
-            >
-              <span className="text-body text-text-muted">{inv.date}</span>
-              <span className="text-body text-text">{inv.description}</span>
-              <span className="text-metric-sm text-text text-right">
-                {inv.amount}
+              <span className="text-caption text-text-muted">
+                Available until May 28
               </span>
-              <div>
-                <StatusPill status={inv.status} />
-              </div>
-              <button
-                type="button"
-                aria-label="Download invoice"
-                className="h-8 w-8 grid place-items-center rounded-md text-text-muted hover:bg-surface-hover hover:text-text transition-colors justify-self-end"
-              >
-                <DownloadSimple size={14} weight="regular" />
-              </button>
             </div>
+          </div>
+        </Card>
+
+        <Card className="p-5 flex flex-col justify-between" height={180}>
+          <span className="text-sm font-medium text-text-muted">
+            Spent (period)
+          </span>
+          <div className="flex flex-col gap-4">
+            <span className="text-metric-lg text-text">$1,203.30</span>
+            <span className="text-caption text-text-muted">
+              Recorded credit spend for the usage period (ledger).
+            </span>
+          </div>
+        </Card>
+      </section>
+
+      {/* Add credits */}
+      <section className="flex flex-col gap-5">
+        <SectionTitle>Add credits</SectionTitle>
+        <div className="grid grid-cols-5 gap-3" style={{ height: 108 }}>
+          {creditPackages.map((pkg) => (
+            <motion.button
+              key={pkg.name}
+              type="button"
+              onClick={() => goToStripe(pkg.buyLink)}
+              whileHover={{ y: -1 }}
+              whileTap={{ scale: 0.96, y: 0 }}
+              transition={{ type: "spring", duration: 0.3, bounce: 0 }}
+              className="bg-surface border border-border-default rounded-2xl shadow-[0_0_8px_rgba(0,0,0,0.02)] p-5 flex flex-col justify-between text-left cursor-pointer hover:border-primary/30 [transition-property:border-color,background-color] [transition-duration:150ms] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+            >
+              <span className="text-sm font-medium text-text-muted">
+                {pkg.name}
+              </span>
+              <div className="flex items-baseline justify-between">
+                <span className="text-metric font-semibold text-text">
+                  {pkg.price}
+                </span>
+                <span className="text-sm font-medium text-text-subtle">
+                  {pkg.credits}
+                </span>
+              </div>
+            </motion.button>
           ))}
         </div>
+
+        {/* or divider */}
+        <div className="relative h-4">
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-border-default" />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-surface px-4 py-1.5">
+            <span className="text-sm font-medium text-text-muted">or</span>
+          </div>
+        </div>
+
+        {/* Custom amount */}
+        <div className="flex items-end gap-2">
+          <div className="flex-1 flex flex-col gap-3">
+            <label
+              htmlFor="custom-amount"
+              className="text-sm font-medium text-text-muted"
+            >
+              Custom USD (whole $)
+            </label>
+            <Input
+              id="custom-amount"
+              value={customAmount}
+              onChange={(e) => setCustomAmount(e.target.value)}
+              placeholder="e.g. 25"
+              inputMode="numeric"
+              className="h-[46px] rounded-2xl px-4 py-0"
+            />
+          </div>
+          <Button
+            type="button"
+            variant="subtle"
+            onClick={handlePayCustom}
+            disabled={!customAmount.trim()}
+            className="h-[46px] rounded-2xl border border-primary/10 px-4"
+          >
+            Pay amount
+          </Button>
+        </div>
       </section>
-    </div>
+
+      {/* Invoices */}
+      <section className="flex flex-col gap-5">
+        <SectionTitle>Invoices</SectionTitle>
+        <div className="bg-surface border border-border-default rounded-2xl shadow-[0_0_8px_rgba(0,0,0,0.02)] overflow-hidden">
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead>Name</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {invoices.map((inv, i) => (
+                <TableRow
+                  key={inv.name}
+                  className={
+                    i === invoices.length - 1 ? "border-b-0" : undefined
+                  }
+                >
+                  <TableCell>{inv.name}</TableCell>
+                  <TableCell>{inv.date}</TableCell>
+                  <TableCell>{inv.amount}</TableCell>
+                  <TableCell
+                    className={cn(
+                      inv.status === "Failed" ? "text-error" : "text-text",
+                    )}
+                  >
+                    {inv.status}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </section>
+    </ContentShell>
   );
 }

@@ -1,6 +1,12 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant sb-collapsed (&:where(html[data-sidebar="collapsed"] *));
+@custom-variant sb-expanded (&:where(html:not([data-sidebar="collapsed"]) *));
 
 :root {
+  color-scheme: light;
+
   --bg: #fcfcfc;
   --surface: #ffffff;
   --surface-subtle: #f4f4f5;
@@ -47,6 +53,103 @@
   --nav-bg-hover: #f4f4f5;
   --nav-bg-active: #ccfbf1;
   --nav-section-label: #a1a1aa;
+
+  --overlay: rgba(0, 0, 0, 0.5);
+  --image-outline: rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #09090b;
+  --surface: #18181b;
+  --surface-subtle: #27272a;
+  --surface-hover: #3f3f46;
+
+  --border: #27272a;
+  --border-subtle: #1f1f23;
+  --border-strong: #3f3f46;
+
+  --text: #fafafa;
+  --text-muted: #a1a1aa;
+  --text-subtle: #71717a;
+  --text-on-primary: #ffffff;
+
+  --primary: #14b8a6;
+  --primary-hover: #2dd4bf;
+  --primary-pressed: #5eead4;
+  --primary-subtle: #134e4a;
+  --primary-subtle-text: #99f6e4;
+  --primary-ring: rgba(20, 184, 166, 0.3);
+
+  --success: #4ade80;
+  --success-subtle: #14532d;
+  --warning: #fbbf24;
+  --warning-subtle: #78350f;
+  --error: #f87171;
+  --error-subtle: #7f1d1d;
+  --info: #22d3ee;
+  --info-subtle: #164e63;
+
+  --code-bg: #27272a;
+  --code-text: #fafafa;
+  --code-accent: #5eead4;
+
+  --sidebar-bg: #09090b;
+  --sidebar-border: #27272a;
+  --sidebar-section-border: #1f1f23;
+
+  --nav-text: #a1a1aa;
+  --nav-text-hover: #fafafa;
+  --nav-text-active: #5eead4;
+  --nav-icon: #71717a;
+  --nav-icon-active: #5eead4;
+  --nav-bg-hover: #27272a;
+  --nav-bg-active: #134e4a;
+  --nav-section-label: #71717a;
+
+  --overlay: rgba(0, 0, 0, 0.7);
+  --image-outline: rgba(255, 255, 255, 0.1);
+
+  /* Override Tailwind-generated color tokens directly so utilities like bg-bg, text-text, border-border-default switch at runtime even when @theme inline has resolved values at build time. */
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-surface-hover: var(--surface-hover);
+  --color-border-default: var(--border);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-text-subtle: var(--text-subtle);
+  --color-text-on-primary: var(--text-on-primary);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-pressed: var(--primary-pressed);
+  --color-primary-subtle: var(--primary-subtle);
+  --color-primary-subtle-text: var(--primary-subtle-text);
+  --color-success: var(--success);
+  --color-success-subtle: var(--success-subtle);
+  --color-warning: var(--warning);
+  --color-warning-subtle: var(--warning-subtle);
+  --color-error: var(--error);
+  --color-error-subtle: var(--error-subtle);
+  --color-info: var(--info);
+  --color-info-subtle: var(--info-subtle);
+  --color-code-bg: var(--code-bg);
+  --color-code-text: var(--code-text);
+  --color-code-accent: var(--code-accent);
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-section-border: var(--sidebar-section-border);
+  --color-nav-text: var(--nav-text);
+  --color-nav-text-hover: var(--nav-text-hover);
+  --color-nav-text-active: var(--nav-text-active);
+  --color-nav-icon: var(--nav-icon);
+  --color-nav-icon-active: var(--nav-icon-active);
+  --color-nav-bg-hover: var(--nav-bg-hover);
+  --color-nav-bg-active: var(--nav-bg-active);
+  --color-nav-section-label: var(--nav-section-label);
 }
 
 @theme inline {
@@ -120,6 +223,7 @@ body {
   line-height: 48px;
   letter-spacing: -0.02em;
   font-weight: 500;
+  text-wrap: balance;
 }
 
 .text-h1 {
@@ -127,6 +231,7 @@ body {
   line-height: 36px;
   letter-spacing: -0.015em;
   font-weight: 600;
+  text-wrap: balance;
 }
 
 .text-h2 {
@@ -134,6 +239,7 @@ body {
   line-height: 26px;
   letter-spacing: -0.01em;
   font-weight: 600;
+  text-wrap: balance;
 }
 
 .text-h3 {
@@ -141,12 +247,14 @@ body {
   line-height: 22px;
   letter-spacing: -0.005em;
   font-weight: 600;
+  text-wrap: balance;
 }
 
 .text-body {
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
+  text-wrap: pretty;
 }
 
 .text-body-strong {
@@ -174,6 +282,7 @@ body {
   letter-spacing: -0.02em;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
+  text-wrap: balance;
 }
 
 .text-metric {
