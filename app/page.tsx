@@ -12,6 +12,7 @@ import { SectionTitle } from "./components/SectionTitle";
 import { Card } from "./components/Card";
 import { CodeBlock } from "./components/CodeBlock";
 import { RevealableSecret } from "./components/RevealableSecret";
+import { McpIntegrationCard } from "./components/McpIntegrationCard";
 import { Button } from "./components/ui/button";
 import Link from "next/link";
 import { apiKey, homeMetrics, user } from "./lib/data";
@@ -26,38 +27,6 @@ const learnMore: {
   { icon: Warning, title: "Error handling", href: "#" },
   { icon: Gauge, title: "Rate limits", href: "#" },
 ];
-
-function McpCodeBlock() {
-  return (
-    <div className="rounded-lg bg-code-bg px-3 py-2 h-[180px] overflow-hidden">
-      <pre className="text-code-sm leading-[1.5] text-code-text whitespace-pre">
-        <span>{`{`}</span>
-        {"\n"}
-        <span>{`  "mcpServers": {`}</span>
-        {"\n"}
-        <span>{`    "hog": {`}</span>
-        {"\n"}
-        <span>{`      "command": "`}</span>
-        <span className="text-primary-hover">{`npx`}</span>
-        <span>{`",`}</span>
-        {"\n"}
-        <span>{`      "args": ["`}</span>
-        <span className="text-primary-hover">{`-y`}</span>
-        <span>{`", "`}</span>
-        <span className="text-primary-hover">{`hog-mcp`}</span>
-        <span>{`"],`}</span>
-        {"\n"}
-        <span>{`      "env": { "HOG_API_KEY": "$HOG_API_KEY" }`}</span>
-        {"\n"}
-        <span>{`    }`}</span>
-        {"\n"}
-        <span>{`  }`}</span>
-        {"\n"}
-        <span>{`}`}</span>
-      </pre>
-    </div>
-  );
-}
 
 export default function Home() {
   return (
@@ -108,8 +77,8 @@ export default function Home() {
                 Try an endpoint in the playground with your live key prefilled.
               </p>
             </div>
-            <Button variant="default" size="default" className="self-start h-[34px]">
-              Open playground
+            <Button variant="default" size="default" asChild className="self-start h-[34px]">
+              <Link href="/playground">Open playground</Link>
             </Button>
           </Card>
         </div>
@@ -195,19 +164,7 @@ export default function Home() {
               <RevealableSecret value={apiKey.value} masked={apiKey.masked} />
             </Card>
 
-            <Card className="p-5 flex flex-col gap-3 relative overflow-hidden">
-              <div className="flex items-start justify-between text-sm font-medium leading-none">
-                <h3 className="text-text">MCP Integration</h3>
-                <button
-                  type="button"
-                  className="relative inline-flex items-center justify-center cursor-pointer text-text-subtle hover:text-text-muted [transition-property:color,scale] [transition-duration:150ms] [transition-timing-function:cubic-bezier(0.2,0,0,1)] active:scale-[0.96] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 before:absolute before:left-1/2 before:top-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:w-[max(40px,100%)] before:h-10 before:content-['']"
-                >
-                  Extend
-                </button>
-              </div>
-              <McpCodeBlock />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-surface via-surface/70 to-transparent" />
-            </Card>
+            <McpIntegrationCard />
           </div>
         </div>
       </section>

@@ -209,6 +209,12 @@ body {
   font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
+.recharts-wrapper,
+.recharts-wrapper :focus,
+.recharts-wrapper :focus-visible {
+  outline: none;
+}
+
 .text-eyebrow {
   font-size: 11px;
   line-height: 16px;
